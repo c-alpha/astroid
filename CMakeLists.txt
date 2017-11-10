@@ -79,7 +79,7 @@ if(APPLE)
   # its own; hence we have to locate it manually
   set ( Gettext_LDFLAGS "-L/usr/local/opt/gettext/lib" )
 endif(APPLE)
-  
+
 find_library ( NOTMUCH_LIB notmuch )
 if(NOT NOTMUCH_LIB)
   message (FATAL_ERROR "notmuch library not found")
@@ -128,15 +128,24 @@ add_compile_options (
 
 add_compile_options (
   -Wall
-  -g
   -Wextra
   )
 
 add_definitions (
   -DDISABLE_PLUGINS
   -DBOOST_LOG_DYN_LINK
-  -DDEBUG
   )
+
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+  add_compile_options (
+    -g
+    -Wextra
+    )
+
+  add_definitions (
+    -DDEBUG
+    )
+endif()
 
 set ( GIT_DESC ${PROJECT_VERSION} )
 set ( PREFIX ${CMAKE_INSTALL_PREFIX} )
@@ -158,7 +167,7 @@ else()
     FATAL_ERROR
     "libsass must be installed: could not find header file. You can disable libsass with --disable-libsass, however, that requires a SCSS compiler like 'sassc' which can be specified with --scss-compiler=<path to compiler>."
     )
-endif()  
+endif()
 
 include_directories (
   src/
@@ -175,7 +184,7 @@ include_directories (
 
 add_executable(
   astroid
-  
+
   src/account_manager.cc
   src/astroid.cc
   src/chunk.cc
